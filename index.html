@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WBMCC Counseling Portal for Admission to MBBS/BDS 2026</title>
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --error-color: #ef4444;
+            --success-color: #22c55e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            max-width: 650px;
+            width: 100%;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .label-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--error-color);
+        }
+
+        .optional-tag {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-left: 6px;
+            font-weight: normal;
+        }
+
+        /* Tooltip Styles */
+        .info-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 18px;
+            height: 18px;
+            background-color: #94a3b8;
+            color: white;
+            border-radius: 50%;
+            font-size: 11px;
+            font-style: italic;
+            font-weight: bold;
+            margin-left: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.2s;
+        }
+
+        .info-btn:hover {
+            background-color: var(--primary);
+        }
+
+        .tooltip {
+            visibility: hidden;
+            width: 260px;
+            background-color: #0f172a;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px 12px;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 0.82rem;
+            line-height: 1.4;
+            font-style: normal;
+            font-weight: normal;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #0f172a transparent transparent transparent;
+        }
+
+        .info-btn:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px dashed var(--border-color);
+            border-radius: 6px;
+            background-color: #f8fafc;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        input[type="file"]:hover {
+            border-color: var(--primary);
+        }
+
+        .file-hint {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Captcha Section */
+        .captcha-box {
+            background-color: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+            margin-bottom: 25px;
+        }
+
+        .captcha-display {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        canvas {
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-decoration: underline;
+            padding: 4px;
+        }
+
+        .captcha-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+        }
+
+        .captcha-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.2);
+        }
+
+        .error-msg {
+            color: var(--error-color);
+            font-size: 0.82rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Submit Button */
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>WBMCC Counseling Portal for Admission to MBBS/BDS 2026</h1>
+
+        <form id="counselingForm" onsubmit="handleFormSubmit(event)">
+            
+            <!-- 1. NEET (UG) 2026 Score Card -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="neetScore" class="required">NEET (UG) 2026 Score Card</label>
+                    <span class="info-btn">i
+                        <span class="tooltip">The NEET scorecard is issued by the National Testing Agency (NTA) and indicates the candidate's score and rank in the exam</span>
+                    </span>
+                </div>
+                <input type="file" id="neetScore" name="neetScore" accept=".pdf, .png, .jpeg, .jpg" required>
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+            <!-- 2. Class 12 Mark Sheet -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="class12" class="required">Class 12 Mark Sheet</label>
+                    <span class="info-btn">i
+                        <span class="tooltip">The class 12 mark sheet is another important document required for the counselling process, indicates the candidate's scores in the qualifying examination (Physics, Chemistry, Biology, and English)</span>
+                    </span>
+                </div>
+                <input type="file" id="class12" name="class12" accept=".pdf, .png, .jpeg, .jpg" required>
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+
+
+<!-- 2. Class 12 Passing Certificate -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="class12" class="required">Class 12 Passing Certificate</label>
+                    <span class="info-btn">i
+                        <span class="tooltip">The class 12 Passing Certificate is another important document required for the counselling process</span>
+                    </span>
+                </div>
+                <input type="file" id="class12" name="class12" accept=".pdf, .png, .jpeg, .jpg" required>
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+
+            <!-- 3. Category Certificate (Optional) -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="categoryCert">Category Certificate</label>
+                    <span class="optional-tag">(Optional)</span>
+                <span class="info-btn">i
+                        <span class="tooltip">Category Certificate is another important document required for the counselling process for candidates eligibility for reserrvation for (SC/ST/OBC)</span>
+                    </span>
+
+                </div>
+                <input type="file" id="categoryCert" name="categoryCert" accept=".pdf, .png, .jpeg, .jpg">
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+<!-- 4. NEET (UG) 2026 Admit Card -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="class12" class="required">NEET (UG) 2026 Admit Card</label>
+                    <span class="info-btn">i
+                        <span class="tooltip">The NEET admit card is proof that the candidate appeared for the NEET (UG) 2026 Examination.</span>
+                    </span>
+                </div>
+                <input type="file" id="class12" name="class12" accept=".pdf, .png, .jpeg, .jpg" required>
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+<!-- 5. Class 10 Passing Certificate -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="class12" class="required">Class 10 Passing Certificate</label>
+                    <span class="info-btn">i
+                        <span class="tooltip">The class 10 Passing Certificate is another important document required for the counselling process to proove the candidate has qualified 10th grade from a recognised Board.</span>
+                    </span>
+                </div>
+                <input type="file" id="class12" name="class12" accept=".pdf, .png, .jpeg, .jpg" required>
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+
+<!-- 6. Birth Certificate -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="class12" class="required">Birth Certificate</label>
+                    <span class="info-btn">i
+                        <span class="tooltip">Birth Certificate is another important document required for the counselling process as a proof of Date of Birth of Candidate.</span>
+                    </span>
+                </div>
+                <input type="file" id="class12" name="class12" accept=".pdf, .png, .jpeg, .jpg" required>
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+
+<!-- 7. Identity Proof (Aadhar Card/Pan Card/Passport) -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="class12" class="required">Identity Proof (Aadhar Card/Pan Card/Passport)</label>
+                    <span class="info-btn">i
+                        <span class="tooltip">Any Government Issued Identity Card For veerification of the counselling process</span>
+                    </span>
+                </div>
+                <input type="file" id="class12" name="class12" accept=".pdf, .png, .jpeg, .jpg" required>
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+
+
+ <!-- 8. EWS or PWD Certificate (Optional) -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="categoryCert">EWS or PWD Certificate</label>
+                    <span class="optional-tag">(Optional)</span>
+                <span class="info-btn">i
+                        <span class="tooltip">Certificate to be Submitted by candidates belonging to Economically Weaker section of the society or Physically Disabled. </span>
+                    </span>
+
+                </div>
+                <input type="file" id="categoryCert" name="categoryCert" accept=".pdf, .png, .jpeg, .jpg">
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+
+<!-- 9. Transfer Certificate (TC) -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="class12" class="required">Transfer Certificate (TC)</label>
+                    <span class="info-btn">i
+                        <span class="tooltip">The school leaving certificate issued by the previous affiliated school where candidate completed his/her 12th Standard Boards.</span>
+                    </span>
+                </div>
+                <input type="file" id="class12" name="class12" accept=".pdf, .png, .jpeg, .jpg" required>
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+
+<!-- 10. Passport-size Photograph -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="class12" class="required">Passport-size Photograph</label>
+                    <span class="info-btn">i
+                        <span class="tooltip">Candidate needs to submit ecently cicked Passport Sized photograph having formaal plain cloth with white Background for the counselling process</span>
+                    </span>
+                </div>
+                <input type="file" id="class12" name="class12" accept=".png, .jpeg, .jpg" required>
+                <div class="file-hint">Accepted formats: PNG, JPEG</div>
+            </div>
+
+
+<!-- 9. Transfer Certificate (TC) -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="class12" class="required">Transfer Certificate (TC)</label>
+                    <span class="info-btn">i
+                        <span class="tooltip">The school leaving certificate issued by the previous affiliated school where candidate completed his/her 12th Standard Boards.</span>
+                    </span>
+                </div>
+                <input type="file" id="class12" name="class12" accept=".pdf, .png, .jpeg, .jpg" required>
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+
+
+<!-- 9. Residency Proof -->
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="class12" class="required">Residency Proof</label>
+                    <span class="info-btn">i
+                        <span class="tooltip">Residency proof of the candidate as a permanent resident of the state West Bengal for eg: Domicile Certifcate, Residency Proof isssued by Tehsildar, School living Certificate, 10+2 Affiliated Board Exam Admit Card (any one of the following).</span>
+                    </span>
+                </div>
+                <input type="file" id="class12" name="class12" accept=".pdf, .png, .jpeg, .jpg" required>
+                <div class="file-hint">Accepted formats: PDF, PNG, JPEG</div>
+            </div>
+
+
+
+
+
+            <!-- Real-time Digit CAPTCHA -->
+            <div class="captcha-box">
+                <div class="label-wrapper">
+                    <label for="captchaInput" class="required">Security Verification</label>My
+                </div>
+                <div class="captcha-display">
+                    <canvas id="captchaCanvas" width="140" height="40"></canvas>
+                    <button type="button" class="refresh-btn" onclick="generateCaptcha()">Refresh Code</button>
+                </div>
+                <input type="text" id="captchaInput" class="captcha-input" placeholder="Enter the digits shown above" required autocomplete="off">
+                <div id="captchaError" class="error-msg">Incorrect CAPTCHA digit. Please try again.</div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Submit & Proceed</button>
+        </form>
+    </div>
+
+    <script>
+        let currentCaptcha = "";
+
+        // Generate dynamic digit-based CAPTCHA on page load
+        function generateCaptcha() {
+            const canvas = document.getElementById("captchaCanvas");
+            const ctx = canvas.getContext("2d");
+            
+            // Clear previous canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Generate 6 random digits
+            currentCaptcha = Math.floor(100000 + Math.random() * 900000).toString();
+
+            // Background noise
+            ctx.fillStyle = "#e2e8f0";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw noise lines
+            for (let i = 0; i < 4; i++) {
+                ctx.strokeStyle = "#94a3b8";
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.stroke();
+            }
+
+            // Draw CAPTCHA Digits
+            ctx.font = "bold 22px 'Segoe UI', monospace";
+            ctx.fillStyle = "#1e40af";
+            
+            for (let i = 0; i < currentCaptcha.length; i++) {
+                const x = 15 + i * 18;
+                const y = 28 + (Math.random() * 4 - 2); // subtle jitter
+                ctx.fillText(currentCaptcha[i], x, y);
+            }
+        }
+
+        // Validate CAPTCHA and submit
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const userCaptcha = document.getElementById("captchaInput").value.trim();
+            const captchaError = document.getElementById("captchaError");
+
+            if (userCaptcha !== currentCaptcha) {
+                captchaError.style.display = "block";
+                generateCaptcha();
+                document.getElementById("captchaInput").value = "";
+                return;
+            }
+
+            captchaError.style.display = "none";
+            
+            // On successful verification and submit click, open the destination link
+            window.location.href = "https://www.instagram.com/?hl=en";
+        }
+
+        // Initialize captcha on load
+        window.onload = generateCaptcha;
+    </script>
+</body>
+</html>
